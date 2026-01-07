@@ -1,0 +1,18 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace finshark_api.models
+{
+    public class Comment
+    {
+       public int Id { get; set; }
+       public string title { get; set; } = string.Empty;
+       public string content { get; set; } = string.Empty;
+
+       public DateTime CreatedOn { get; set; } = DateTime.Now;
+       public int? StockId { get; set; }
+       public Stock? Stock { get; set; }
+    }
+}
