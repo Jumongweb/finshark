@@ -1,5 +1,6 @@
 using finshark_api.Data;
 using finshark_api.Dtos.Stock;
+using finshark_api.Helpers;
 using finshark_api.Interfaces;
 using finshark_api.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -10,26 +11,25 @@ namespace finshark_api.Controllers
     [ApiController]
     public class StockController : ControllerBase
     {
-        private readonly ApplicationDBContext _dbContext;
+
         private readonly ILogger<StockController> _logger;
         private readonly IStockRepository _stockRepository;
 
-        public StockController(ILogger<StockController> logger, ApplicationDBContext dbContext, IStockRepository stockRepository)
+        public StockController(ILogger<StockController> logger, IStockRepository stockRepository)
         {
             _logger = logger;
-            _dbContext = dbContext;
             _stockRepository = stockRepository;
             
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
                 
             _logger.LogInformation("============> Fetching all stocks");
-            var stocks = await _stockRepository.getAllAsync();
+            var stocks = await _stockRepository.getAllAsync(queryObject);
             var stockDto = stocks.Select(stock => stock.ToStockDto());
             return Ok(stockDto);
         }
@@ -90,5 +90,7 @@ namespace finshark_api.Controllers
 
             return NoContent();
         }
+
+
     }
 }
